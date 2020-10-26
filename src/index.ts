@@ -74,6 +74,8 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		return tmp!;
 	}
 
+	_isRefreshing = false;
+
 	/**
 	 * Refreshes the content of this store by calling the data provider and waiting for the new value.
 	 * The store is set to the new value only if the value returned from the data provider promise is different than
@@ -81,12 +83,19 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * @param temporaryValue (optional) a value the store will contain until the data provider promise resolves
 	 */
 	async refresh(temporaryValue?: TRaw): Promise<void> {
-		if (temporaryValue !== undefined) {
-			this._setValueRaw(temporaryValue);
-		}
-		const res = await this._dataProvider();
-		if (JSON.stringify(res) !== JSON.stringify(this._getValueRaw())) {
-			this._setValueRaw(res);
+		if (!this._isRefreshing) {
+			this._isRefreshing = true;
+			try {
+				if (temporaryValue !== undefined) {
+					this._setValueRaw(temporaryValue);
+				}
+				const res = await this._dataProvider();
+				if (JSON.stringify(res) !== JSON.stringify(this._getValueRaw())) {
+					this._setValueRaw(res);
+				}
+			} finally {
+				this._isRefreshing = false;
+			}
 		}
 	}
 
