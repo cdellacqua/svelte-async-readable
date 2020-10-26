@@ -27,6 +27,7 @@ Svelte Readable Store bound to an async resource
 ### Properties
 
 * [_dataProvider](asyncreadable.md#_dataprovider)
+* [_isRefreshing](asyncreadable.md#_isrefreshing)
 * [_mapper](asyncreadable.md#_mapper)
 * [_readable](asyncreadable.md#_readable)
 * [_readableRaw](asyncreadable.md#_readableraw)
@@ -71,6 +72,12 @@ A function that returns a promise for the raw entity
 #### Type declaration:
 
 ▸ (): *Promise‹TRaw›*
+
+___
+
+###  _isRefreshing
+
+• **_isRefreshing**: *boolean* = false
 
 ___
 
