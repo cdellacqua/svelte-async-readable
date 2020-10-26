@@ -1,6 +1,6 @@
 # svelte-async-readable
 
-Svelte Readable Store bound to an async resources
+Svelte Readable Store bound to an async resource
 
 ## Full documentation:
 * [AsyncReadable](https://github.com/cdellacqua/svelte-async-readable/blob/master/docs/classes/asyncreadable.md)
