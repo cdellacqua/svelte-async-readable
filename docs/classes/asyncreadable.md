@@ -30,12 +30,13 @@ Svelte Readable Store bound to an async resource
 * [_isRefreshing](asyncreadable.md#_isrefreshing)
 * [_mapper](asyncreadable.md#_mapper)
 * [_readable](asyncreadable.md#_readable)
-* [_readableRaw](asyncreadable.md#_readableraw)
+* [_writableRaw](asyncreadable.md#_writableraw)
 
 ### Methods
 
 * [_getValueRaw](asyncreadable.md#_getvalueraw)
 * [_setValueRaw](asyncreadable.md#_setvalueraw)
+* [_updateValueRaw](asyncreadable.md#_updatevalueraw)
 * [refresh](asyncreadable.md#refresh)
 * [subscribe](asyncreadable.md#subscribe)
 
@@ -107,11 +108,11 @@ Readable svelte store that contains the mapped value
 
 ___
 
-###  _readableRaw
+###  _writableRaw
 
-• **_readableRaw**: *Readable‹TRaw›*
+• **_writableRaw**: *Writable‹TRaw›*
 
-Readable store associated with the raw entity returned from the data provider
+Writable store associated with the raw entity returned by the data provider
 
 ## Methods
 
@@ -125,7 +126,33 @@ ___
 
 ###  _setValueRaw
 
-▸ **_setValueRaw**(): *void*
+▸ **_setValueRaw**(`value`: TRaw): *void*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | TRaw |
+
+**Returns:** *void*
+
+___
+
+###  _updateValueRaw
+
+▸ **_updateValueRaw**(`updater`: function): *void*
+
+**Parameters:**
+
+▪ **updater**: *function*
+
+▸ (`value`: TRaw): *TRaw*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | TRaw |
 
 **Returns:** *void*
 
