@@ -1,17 +1,17 @@
 import {
-	readable, Readable, derived,
+	readable, Readable, derived, writable, Writable, get
 // eslint-disable-next-line import/no-extraneous-dependencies
 } from 'svelte/store';
-import { readable as persistentReadable } from 'svelte-persistent-store/dist/local';
+import { writable as persistentWritable } from 'svelte-persistent-store/dist/local';
 
 /**
  * Svelte Readable Store bound to an async resource
  */
 export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	/**
-	 * Readable store associated with the raw entity returned from the data provider
+	 * Writable store associated with the raw entity returned by the data provider
 	 */
-	_readableRaw: Readable<TRaw>;
+	_writableRaw: Writable<TRaw>;
 
 	/**
 	 * Readable svelte store that contains the mapped value
@@ -48,30 +48,31 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		this._dataProvider = dataProvider;
 
 		const defaultStart = (set: (value: TRaw) => void) => {
-			this._setValueRaw = set;
-
 			const unsubscribe = start?.(set);
 
 			this.refresh();
 
 			return () => {
-				this._setValueRaw = ()=>{};
 				if (unsubscribe) {
 					unsubscribe();
 				}
 			};
 		};
 
-		this._readableRaw = storageName ? persistentReadable(storageName, initialValue, defaultStart) : readable<TRaw>(initialValue, defaultStart);
-		this._readable = derived(this._readableRaw, ($value) => this._mapper($value));
+		this._writableRaw = storageName ? persistentWritable<TRaw>(storageName, initialValue, defaultStart) : writable<TRaw>(initialValue, defaultStart);
+		this._readable = derived(this._writableRaw, ($value) => this._mapper($value));
+	}
+	
+	_updateValueRaw(updater: (value: TRaw) => TRaw): void {
+		this._writableRaw.update(updater);
 	}
 
-	_setValueRaw: (value: TRaw) => void = ()=>{};
+	_setValueRaw(value: TRaw): void {
+		this._writableRaw.set(value);
+	}
 
 	_getValueRaw(): TRaw {
-		let tmp: TRaw;
-		this._readableRaw.subscribe((value) => { tmp = value; })();
-		return tmp!;
+		return get(this._writableRaw);
 	}
 
 	_isRefreshing = false;
