@@ -19,6 +19,7 @@
 * [dataProvider](asyncreadableconfig.md#dataprovider)
 * [initialValue](asyncreadableconfig.md#initialvalue)
 * [mapper](asyncreadableconfig.md#optional-mapper)
+* [refresh](asyncreadableconfig.md#optional-refresh)
 * [start](asyncreadableconfig.md#optional-start)
 * [storageName](asyncreadableconfig.md#optional-storagename)
 
@@ -49,6 +50,14 @@ ___
 • **mapper**? : *undefined | function*
 
 A function that converts TRaw to T
+
+___
+
+### `Optional` refresh
+
+• **refresh**? : *undefined | false | true*
+
+Whether or not the dataProvider should be called automatically by this constructor to refresh the data
 
 ___
 

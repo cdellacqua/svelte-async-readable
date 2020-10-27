@@ -26,19 +26,20 @@ Svelte Readable Store bound to an async resource
 
 ### Properties
 
-* [_dataProvider](asyncreadable.md#_dataprovider)
-* [_isRefreshing](asyncreadable.md#_isrefreshing)
-* [_mapper](asyncreadable.md#_mapper)
 * [_readable](asyncreadable.md#_readable)
-* [_writableRaw](asyncreadable.md#_writableraw)
+* [dataProvider](asyncreadable.md#dataprovider)
+* [mapper](asyncreadable.md#mapper)
+* [refreshing](asyncreadable.md#refreshing)
+* [writableRaw](asyncreadable.md#writableraw)
 
 ### Methods
 
-* [_getValueRaw](asyncreadable.md#_getvalueraw)
-* [_setValueRaw](asyncreadable.md#_setvalueraw)
-* [_updateValueRaw](asyncreadable.md#_updatevalueraw)
+* [getRaw](asyncreadable.md#getraw)
+* [isRefreshing](asyncreadable.md#isrefreshing)
 * [refresh](asyncreadable.md#refresh)
+* [setRaw](asyncreadable.md#setraw)
 * [subscribe](asyncreadable.md#subscribe)
+* [updateRaw](asyncreadable.md#updateraw)
 
 ## Constructors
 
@@ -46,7 +47,7 @@ Svelte Readable Store bound to an async resource
 
 \+ **new AsyncReadable**(`__namedParameters`: object): *[AsyncReadable](asyncreadable.md)*
 
-Instantiates an async readable
+Instantiates an async readable.
 
 **Parameters:**
 
@@ -57,6 +58,7 @@ Name | Type |
 `dataProvider` | function |
 `initialValue` | TRaw |
 `mapper` | undefined &#124; function |
+`refresh` | undefined &#124; false &#124; true |
 `start` | undefined &#124; function |
 `storageName` | undefined &#124; string |
 
@@ -64,9 +66,17 @@ Name | Type |
 
 ## Properties
 
-###  _dataProvider
+###  _readable
 
-• **_dataProvider**: *function*
+• **_readable**: *Readable‹T›*
+
+The decorated Readable Svelte store that contains the mapped value
+
+___
+
+###  dataProvider
+
+• **dataProvider**: *function*
 
 A function that returns a promise for the raw entity
 
@@ -76,15 +86,9 @@ A function that returns a promise for the raw entity
 
 ___
 
-###  _isRefreshing
+###  mapper
 
-• **_isRefreshing**: *boolean* = false
-
-___
-
-###  _mapper
-
-• **_mapper**: *function*
+• **mapper**: *function*
 
 A mapping function that converts the TRaw value to T
 
@@ -100,61 +104,40 @@ Name | Type |
 
 ___
 
-###  _readable
+###  refreshing
 
-• **_readable**: *Readable‹T›*
+• **refreshing**: *Writable‹boolean›* = writable<boolean>(false)
 
-Readable svelte store that contains the mapped value
+A writable store associated with the progress of the dataProvider. It contains true if the refresh function
+is waiting for the promise of the dataProvider to be resolved
 
 ___
 
-###  _writableRaw
+###  writableRaw
 
-• **_writableRaw**: *Writable‹TRaw›*
+• **writableRaw**: *Writable‹TRaw›*
 
 Writable store associated with the raw entity returned by the data provider
 
 ## Methods
 
-###  _getValueRaw
+###  getRaw
 
-▸ **_getValueRaw**(): *TRaw*
+▸ **getRaw**(): *TRaw*
+
+Returns the current value of the writableRaw store
 
 **Returns:** *TRaw*
 
 ___
 
-###  _setValueRaw
+###  isRefreshing
 
-▸ **_setValueRaw**(`value`: TRaw): *void*
+▸ **isRefreshing**(): *boolean*
 
-**Parameters:**
+Returns true if the refresh function is still waiting for the promise of the dataProvider to be resolved
 
-Name | Type |
------- | ------ |
-`value` | TRaw |
-
-**Returns:** *void*
-
-___
-
-###  _updateValueRaw
-
-▸ **_updateValueRaw**(`updater`: function): *void*
-
-**Parameters:**
-
-▪ **updater**: *function*
-
-▸ (`value`: TRaw): *TRaw*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`value` | TRaw |
-
-**Returns:** *void*
+**Returns:** *boolean*
 
 ___
 
@@ -173,6 +156,22 @@ Name | Type | Description |
 `temporaryValue?` | TRaw | (optional) a value the store will contain until the data provider promise resolves  |
 
 **Returns:** *Promise‹void›*
+
+___
+
+###  setRaw
+
+▸ **setRaw**(`value`: TRaw): *void*
+
+Forces the value of the writableRaw store
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`value` | TRaw | the new value  |
+
+**Returns:** *void*
 
 ___
 
@@ -201,3 +200,28 @@ Name | Type |
 **Returns:** *function*
 
 ▸ (): *void*
+
+___
+
+###  updateRaw
+
+▸ **updateRaw**(`updater`: function): *void*
+
+Assigns a new value to the writableRaw store via an update function
+
+**Parameters:**
+
+▪ **updater**: *function*
+
+update function that accepts the current value contained in the writableRaw store and
+returns the new value
+
+▸ (`value`: TRaw): *TRaw*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | TRaw |
+
+**Returns:** *void*
