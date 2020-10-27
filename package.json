@@ -11,7 +11,7 @@
 		"doc": "rimraf docs && typedoc --disableSources --readme none --mode file --plugin typedoc-plugin-markdown src/index.ts",
 		"prepare": "npm run build && npm run doc",
 		"prepublishOnly": "npm test",
-		"dev": "rimraf public/build && rollup -c -w",
+		"dev": "npm run build && rimraf public/build && rollup -c -w",
 		"start": "sirv public --host"
 	},
 	"keywords": [

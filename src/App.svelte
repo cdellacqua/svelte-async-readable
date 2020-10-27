@@ -5,10 +5,13 @@
 
 	const myReadable = asyncReadable({
 		dataProvider: () =>
-			axios.get("/example.json").then((response) => response.data),
+			axios.get("/example.json")
+				.then((response) => response.data)
+				.then((data) => new Promise(res => setTimeout(() => res(data), 1000))), // artificial timeout to see the loading status
 		initialValue: null,
 		storageName: "my-readable",
 	});
+	const { refreshing } = myReadable;
 
 	function readableTimer(seconds) {
 		return readable(seconds, (set) => {
@@ -33,7 +36,7 @@
 	const timer2 = readableTimer(8);
 
 	$: if ($timer1 === 0) {
-		myReadable._setValueRaw([]);		
+		myReadable.setRaw([]);		
 	}
 
 	$: if ($timer2 === 0) {
@@ -48,11 +51,15 @@
 </style>
 
 <h1>Here is the resource:</h1>
-<div>{JSON.stringify($myReadable)}</div>
+{#if $refreshing}
+	<div>Loading...</div>
+{:else}
+	<div>{JSON.stringify($myReadable)}</div>
+{/if}
 {#if $timer1}
 	<h3>Setting custom value in: {$timer1}</h3>
 {:else if $timer2}
 	<h3>Refreshing in: {$timer2}</h3>
-{:else}
+{:else if !$refreshing}
 	<h3>Demo completed</h3>
 {/if}
