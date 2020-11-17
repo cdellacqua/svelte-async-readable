@@ -148,6 +148,7 @@ ___
 Refreshes the content of this store by calling the data provider and waiting for the new value.
 The store is set to the new value only if the value returned from the data provider promise is different than
 the value previously stored.
+If the dataProvider throws an error and a temporaryValue was set to the store, the previous value is restored.
 
 **Parameters:**
 
