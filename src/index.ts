@@ -108,18 +108,24 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * Refreshes the content of this store by calling the data provider and waiting for the new value.
 	 * The store is set to the new value only if the value returned from the data provider promise is different than
 	 * the value previously stored.
+	 * If the dataProvider throws an error and a temporaryValue was set to the store, the previous value is restored.
 	 * @param temporaryValue (optional) a value the store will contain until the data provider promise resolves
 	 */
 	async refresh(temporaryValue?: TRaw): Promise<void> {
 		if (!this.isRefreshing()) {
 			this.refreshing.set(true);
+			const oldValueRaw = this.getRaw();
 			try {
 				if (temporaryValue !== undefined) {
 					this.setRaw(temporaryValue);
 				}
 				const res = await this.dataProvider();
-				if (JSON.stringify(res) !== JSON.stringify(this.getRaw())) {
+				if (JSON.stringify(res) !== JSON.stringify(oldValueRaw)) {
 					this.setRaw(res);
+				}
+			} catch (err) {
+				if (temporaryValue !== undefined) {
+					this.setRaw(oldValueRaw);
 				}
 			} finally {
 				this.refreshing.set(false);
