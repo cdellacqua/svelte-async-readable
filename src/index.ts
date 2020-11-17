@@ -120,7 +120,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 					this.setRaw(temporaryValue);
 				}
 				const res = await this.dataProvider();
-				if (JSON.stringify(res) !== JSON.stringify(oldValueRaw)) {
+				if (JSON.stringify(res) !== JSON.stringify(this.getRaw())) {
 					this.setRaw(res);
 				}
 			} catch (err) {
