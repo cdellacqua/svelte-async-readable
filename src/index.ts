@@ -127,6 +127,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 				if (temporaryValue !== undefined) {
 					this.setRaw(oldValueRaw);
 				}
+				throw err;
 			} finally {
 				this.refreshing.set(false);
 			}
