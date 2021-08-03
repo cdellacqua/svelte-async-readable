@@ -2,7 +2,6 @@ import {
 	Readable, derived, writable, Writable, get
 // eslint-disable-next-line import/no-extraneous-dependencies
 } from 'svelte/store';
-import { writable as persistentWritable } from 'svelte-persistent-store/dist/local';
 
 /**
  * Svelte Readable Store bound to an async resource
@@ -14,9 +13,14 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	writableRaw: Writable<TRaw>;
 
 	/**
-	 * The decorated Readable Svelte store that contains the mapped value
+	 * The Readable Svelte store that contains the mapped value
 	 */
 	_readable: Readable<T>;
+
+	/**
+	 * The key to use when reading from and saving to the localStorage
+	 */
+	storageName: string|undefined;
 
 	/**
 	 * A function that returns a promise for the raw entity
@@ -37,6 +41,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * @param config.storageName (optional) a string containing the key for the localStorage to cache the value contained in the store
 	 * @param config.start (optional) a start function to pass to the Readable store
 	 * @param config.refresh (optional) whether or not the dataProvider should be called automatically by this constructor to refresh the data, defaults to true
+	 * @param config.resetOnInitFailure (optional) whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data), defaults to true
 	 */
 	constructor({
 		initialValue,
@@ -45,21 +50,47 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		dataProvider,
 		start,
 		refresh,
+		resetOnInitFailure,
 	}: AsyncReadableConfig<T, TRaw>) {
+		const stringifiedInitialValue = JSON.stringify(initialValue);
+		if (stringifiedInitialValue === undefined) {
+			throw new Error('you can only use values accepted by JSON.stringify');
+		}
+
 		this.mapper = mapper ?? ((raw) => raw as unknown as T);
 		this.dataProvider = dataProvider;
+		this.storageName = storageName;
 
-		const defaultStart = (set: (value: TRaw) => void) => {
-			const unsubscribe = start?.(set);
-
-			return () => {
-				if (unsubscribe) {
-					unsubscribe();
+		if (storageName) {
+			let initialOrExistingValue = initialValue;
+			const localStorageValue = localStorage.getItem(storageName);
+			if (localStorageValue !== null) {
+				try {
+					initialOrExistingValue = JSON.parse(localStorageValue);
+				} catch (err) {
+					if (resetOnInitFailure === undefined || resetOnInitFailure) {
+						localStorage.setItem(storageName, stringifiedInitialValue);
+					} else {
+						throw err;
+					}
 				}
-			};
-		};
+			} else {
+				localStorage.setItem(storageName, stringifiedInitialValue);
+			}
+			this.writableRaw = writable<TRaw>(initialOrExistingValue, start && ((set) => {
+				return start((value) => {
+					const stringifiedValue = JSON.stringify(value);
+					if (stringifiedValue === undefined) {
+						throw new Error('you can only use values accepted by JSON.stringify');
+					}
+					localStorage.setItem(storageName, stringifiedValue);
+					set(value);
+				});
+			}));
+		} else {
+			this.writableRaw = writable<TRaw>(initialValue, start);
+		}
 
-		this.writableRaw = storageName ? persistentWritable<TRaw>(storageName, initialValue, defaultStart) : writable<TRaw>(initialValue, defaultStart);
 		this._readable = derived(this.writableRaw, ($value) => this.mapper($value));
 
 		if (refresh === undefined || refresh) {
@@ -73,7 +104,17 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * returns the new value
 	 */
 	updateRaw(updater: (value: TRaw) => TRaw): void {
-		this.writableRaw.update(updater);
+		this.writableRaw.update((oldValue) => {
+			const newValue = updater(oldValue);
+			const stringifiedValue = JSON.stringify(newValue);
+			if (stringifiedValue === undefined) {
+				throw new Error('you can only use values accepted by JSON.stringify');
+			}
+			if (this.storageName) {
+				localStorage.setItem(this.storageName, stringifiedValue);
+			}
+			return newValue;
+		});
 	}
 
 	/**
@@ -81,6 +122,13 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * @param value the new value
 	 */
 	setRaw(value: TRaw): void {
+		const stringifiedValue = JSON.stringify(value);
+		if (stringifiedValue === undefined) {
+			throw new Error('you can only use values accepted by JSON.stringify');
+		}
+		if (this.storageName) {
+			localStorage.setItem(this.storageName, stringifiedValue);
+		}
 		this.writableRaw.set(value);
 	}
 
@@ -156,7 +204,9 @@ export interface AsyncReadableConfig<T, TRaw> {
 	/** A start function to pass to the Readable store */
 	start?: (set: (value: TRaw) => void) => void|(() => void),
 	/** Whether or not the dataProvider should be called automatically by this constructor to refresh the data */
-	refresh?: boolean;
+	refresh?: boolean,
+	/** Whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data) */
+	resetOnInitFailure?: boolean,
 }
 
 /**
@@ -168,6 +218,7 @@ export interface AsyncReadableConfig<T, TRaw> {
  * @param config.storageName (optional) a string containing the key for the localStorage to cache the value contained in the store
  * @param config.start (optional) a start function to pass to the Readable store
  * @param config.refresh (optional) whether or not the dataProvider should be called automatically by this constructor to refresh the data, defaults to true
+ * @param config.resetOnInitFailure (optional) whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data), defaults to true
  */
 export function asyncReadable<T, TRaw = T>(config: AsyncReadableConfig<T, TRaw>) {
 	return new AsyncReadable<T, TRaw>(config);
