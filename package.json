@@ -1,6 +1,6 @@
 {
 	"name": "svelte-async-readable",
-	"version": "1.3.2",
+	"version": "2.0.0",
 	"description": "Svelte Readable Store bound to an async resource",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
