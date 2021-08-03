@@ -30,6 +30,7 @@ Svelte Readable Store bound to an async resource
 * [dataProvider](asyncreadable.md#dataprovider)
 * [mapper](asyncreadable.md#mapper)
 * [refreshing](asyncreadable.md#refreshing)
+* [storageName](asyncreadable.md#storagename)
 * [writableRaw](asyncreadable.md#writableraw)
 
 ### Methods
@@ -59,6 +60,7 @@ Name | Type |
 `initialValue` | TRaw |
 `mapper` | undefined &#124; function |
 `refresh` | undefined &#124; false &#124; true |
+`resetOnInitFailure` | undefined &#124; false &#124; true |
 `start` | undefined &#124; function |
 `storageName` | undefined &#124; string |
 
@@ -70,7 +72,7 @@ Name | Type |
 
 • **_readable**: *Readable‹T›*
 
-The decorated Readable Svelte store that contains the mapped value
+The Readable Svelte store that contains the mapped value
 
 ___
 
@@ -110,6 +112,14 @@ ___
 
 A writable store associated with the progress of the dataProvider. It contains true if the refresh function
 is waiting for the promise of the dataProvider to be resolved
+
+___
+
+###  storageName
+
+• **storageName**: *string | undefined*
+
+The key to use when reading from and saving to the localStorage
 
 ___
 

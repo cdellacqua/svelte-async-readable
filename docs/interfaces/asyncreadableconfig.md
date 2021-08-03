@@ -20,6 +20,7 @@
 * [initialValue](asyncreadableconfig.md#initialvalue)
 * [mapper](asyncreadableconfig.md#optional-mapper)
 * [refresh](asyncreadableconfig.md#optional-refresh)
+* [resetOnInitFailure](asyncreadableconfig.md#optional-resetoninitfailure)
 * [start](asyncreadableconfig.md#optional-start)
 * [storageName](asyncreadableconfig.md#optional-storagename)
 
@@ -58,6 +59,14 @@ ___
 • **refresh**? : *undefined | false | true*
 
 Whether or not the dataProvider should be called automatically by this constructor to refresh the data
+
+___
+
+### `Optional` resetOnInitFailure
+
+• **resetOnInitFailure**? : *undefined | false | true*
+
+Whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data)
 
 ___
 
