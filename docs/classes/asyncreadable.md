@@ -28,16 +28,17 @@ Svelte Readable Store bound to an async resource
 
 * [_readable](asyncreadable.md#_readable)
 * [dataProvider](asyncreadable.md#dataprovider)
+* [fetching](asyncreadable.md#fetching)
 * [mapper](asyncreadable.md#mapper)
-* [refreshing](asyncreadable.md#refreshing)
 * [storageName](asyncreadable.md#storagename)
 * [writableRaw](asyncreadable.md#writableraw)
 
 ### Methods
 
+* [clear](asyncreadable.md#clear)
+* [fetch](asyncreadable.md#fetch)
 * [getRaw](asyncreadable.md#getraw)
-* [isRefreshing](asyncreadable.md#isrefreshing)
-* [refresh](asyncreadable.md#refresh)
+* [isFetching](asyncreadable.md#isfetching)
 * [setRaw](asyncreadable.md#setraw)
 * [subscribe](asyncreadable.md#subscribe)
 * [updateRaw](asyncreadable.md#updateraw)
@@ -59,7 +60,7 @@ Name | Type |
 `dataProvider` | function |
 `initialValue` | TRaw |
 `mapper` | undefined &#124; function |
-`refresh` | undefined &#124; false &#124; true |
+`prefetch` | undefined &#124; false &#124; true |
 `resetOnInitFailure` | undefined &#124; false &#124; true |
 `start` | undefined &#124; function |
 `storageName` | undefined &#124; string |
@@ -88,6 +89,15 @@ A function that returns a promise for the raw entity
 
 ___
 
+###  fetching
+
+• **fetching**: *Writable‹boolean›* = writable<boolean>(false)
+
+A writable store associated with the progress of the dataProvider. It contains true if the fetch function
+is waiting for the promise of the dataProvider to be settled
+
+___
+
 ###  mapper
 
 • **mapper**: *function*
@@ -103,15 +113,6 @@ A mapping function that converts the TRaw value to T
 Name | Type |
 ------ | ------ |
 `raw` | TRaw |
-
-___
-
-###  refreshing
-
-• **refreshing**: *Writable‹boolean›* = writable<boolean>(false)
-
-A writable store associated with the progress of the dataProvider. It contains true if the refresh function
-is waiting for the promise of the dataProvider to be resolved
 
 ___
 
@@ -131,31 +132,22 @@ Writable store associated with the raw entity returned by the data provider
 
 ## Methods
 
-###  getRaw
+###  clear
 
-▸ **getRaw**(): *TRaw*
+▸ **clear**(): *void*
 
-Returns the current value of the writableRaw store
+If storageName is set, this function removes the corresponding item from the localStorage,
+Otherwise this function does nothing
 
-**Returns:** *TRaw*
-
-___
-
-###  isRefreshing
-
-▸ **isRefreshing**(): *boolean*
-
-Returns true if the refresh function is still waiting for the promise of the dataProvider to be resolved
-
-**Returns:** *boolean*
+**Returns:** *void*
 
 ___
 
-###  refresh
+###  fetch
 
-▸ **refresh**(`temporaryValue?`: TRaw): *Promise‹void›*
+▸ **fetch**(`temporaryValue?`: TRaw): *Promise‹void›*
 
-Refreshes the content of this store by calling the data provider and waiting for the new value.
+Updates the content of this store by calling the data provider and waiting for the new value.
 The store is set to the new value only if the value returned from the data provider promise is different than
 the value previously stored.
 If the dataProvider throws an error and a temporaryValue was set to the store, the previous value is restored.
@@ -167,6 +159,26 @@ Name | Type | Description |
 `temporaryValue?` | TRaw | (optional) a value the store will contain until the data provider promise resolves  |
 
 **Returns:** *Promise‹void›*
+
+___
+
+###  getRaw
+
+▸ **getRaw**(): *TRaw*
+
+Returns the current value of the writableRaw store
+
+**Returns:** *TRaw*
+
+___
+
+###  isFetching
+
+▸ **isFetching**(): *boolean*
+
+Returns true if the fetch function is still waiting for the promise of the dataProvider to be resolved
+
+**Returns:** *boolean*
 
 ___
 
