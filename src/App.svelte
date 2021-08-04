@@ -11,7 +11,7 @@
 		initialValue: null,
 		storageName: "my-readable",
 	});
-	const { refreshing } = myReadable;
+	const { fetching } = myReadable;
 
 	function readableTimer(seconds) {
 		return readable(seconds, (set) => {
@@ -40,7 +40,7 @@
 	}
 
 	$: if ($timer2 === 0) {
-		myReadable.refresh();
+		myReadable.fetch();
 	}
 </script>
 
@@ -51,7 +51,7 @@
 </style>
 
 <h1>Here is the resource:</h1>
-{#if $refreshing}
+{#if $fetching}
 	<div>Loading...</div>
 {:else}
 	<div>{JSON.stringify($myReadable)}</div>
@@ -59,7 +59,7 @@
 {#if $timer1}
 	<h3>Setting custom value in: {$timer1}</h3>
 {:else if $timer2}
-	<h3>Refreshing in: {$timer2}</h3>
-{:else if !$refreshing}
+	<h3>Fetching in: {$timer2}</h3>
+{:else if !$fetching}
 	<h3>Demo completed</h3>
 {/if}

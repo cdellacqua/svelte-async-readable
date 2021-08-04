@@ -28,13 +28,13 @@ Here is the resource:
 <div>{$myReadable}</div>
 ```
 
-A useful `refreshing` nested store is provided. It can be used, for example, to show a loading state:
+A useful `fetching` nested store is provided. It can be used, for example, to show a loading state:
 ```
 <script>
 	const myReadable = asyncReadable(...); // Initialized in some way
-	const { refreshing } = myReadable; // Extracts the refreshing store
+	const { fetching } = myReadable; // Extracts the fetching store
 </script>
-{#if $refreshing}
+{#if $fetching}
 	Loading...
 {:else}
 	Here is the resource:
@@ -43,11 +43,11 @@ A useful `refreshing` nested store is provided. It can be used, for example, to 
 
 ```
 
-The refresh must be manually triggered (for example, after some changes to the app state)
+The fetch must be manually triggered (for example, after some changes to the app state)
 ```
-myReadable.refresh();
+myReadable.fetch();
 ```
-You can pass a temporary value that will be assigned to the AsyncReadable (thus triggering the refresh to all subscriptions) while waiting for the new value retrived using the dataProvider. This also can be useful to show a loading state
+You can pass a temporary value that will be assigned to the AsyncReadable (thus triggering the fetch to all subscriptions) while waiting for the new value retrieved using the dataProvider. This also can be useful to show a loading state
 ```
-myReadable.refresh(null);
+myReadable.fetch(null);
 ```
