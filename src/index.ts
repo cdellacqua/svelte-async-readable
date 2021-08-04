@@ -183,6 +183,16 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	}
 
 	/**
+	 * If storageName is set, this function removes the corresponding item from the localStorage,
+	 * Otherwise this function does nothing
+	 */
+	clear(): void {
+		if (this.storageName !== undefined && typeof localStorage !== "undefined") {
+			localStorage.removeItem(this.storageName);
+		}
+	}
+
+	/**
 	 * Subscribes to this store
 	 * @param run a callback that will be executed any time the value of the store changes
 	 * @param invalidate
