@@ -61,7 +61,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		this.dataProvider = dataProvider;
 		this.storageName = storageName;
 
-		if (storageName !== undefined) {
+		if (storageName !== undefined && typeof localStorage !== "undefined") {
 			let initialOrExistingValue = initialValue;
 			const localStorageValue = localStorage.getItem(storageName);
 			if (localStorageValue !== null) {
@@ -110,7 +110,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 			if (stringifiedValue === undefined) {
 				throw new Error('you can only use values accepted by JSON.stringify');
 			}
-			if (this.storageName !== undefined) {
+			if (this.storageName !== undefined && typeof localStorage !== "undefined") {
 				localStorage.setItem(this.storageName, stringifiedValue);
 			}
 			return newValue;
@@ -126,7 +126,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		if (stringifiedValue === undefined) {
 			throw new Error('you can only use values accepted by JSON.stringify');
 		}
-		if (this.storageName !== undefined) {
+		if (this.storageName !== undefined && typeof localStorage !== "undefined") {
 			localStorage.setItem(this.storageName, stringifiedValue);
 		}
 		this.writableRaw.set(value);
