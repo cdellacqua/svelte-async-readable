@@ -40,7 +40,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	 * @param config.mapper (optional) a function that converts TRaw to T, defaults to the identity function (v) => v
 	 * @param config.storageName (optional) a string containing the key for the localStorage to cache the value contained in the store
 	 * @param config.start (optional) a start function to pass to the Readable store
-	 * @param config.refresh (optional) whether or not the dataProvider should be called automatically by this constructor to refresh the data, defaults to true
+	 * @param config.prefetch (optional) whether or not the dataProvider should be called automatically by this constructor to fetch the data, defaults to true
 	 * @param config.resetOnInitFailure (optional) whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data), defaults to true
 	 */
 	constructor({
@@ -49,7 +49,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		mapper,
 		dataProvider,
 		start,
-		refresh,
+		prefetch,
 		resetOnInitFailure,
 	}: AsyncReadableConfig<T, TRaw>) {
 		const stringifiedInitialValue = JSON.stringify(initialValue);
@@ -93,8 +93,8 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 
 		this._readable = derived(this.writableRaw, ($value) => this.mapper($value));
 
-		if (refresh === undefined || refresh) {
-			this.refresh();
+		if (prefetch === undefined || prefetch) {
+			this.fetch();
 		}
 	}
 	
@@ -140,28 +140,28 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 	}
 
 	/**
-	 * Returns true if the refresh function is still waiting for the promise of the dataProvider to be resolved
+	 * Returns true if the fetch function is still waiting for the promise of the dataProvider to be resolved
 	 */
-	isRefreshing(): boolean {
-		return get(this.refreshing);
+	isFetching(): boolean {
+		return get(this.fetching);
 	}
 
 	/**
-	 * A writable store associated with the progress of the dataProvider. It contains true if the refresh function
-	 * is waiting for the promise of the dataProvider to be resolved
+	 * A writable store associated with the progress of the dataProvider. It contains true if the fetch function
+	 * is waiting for the promise of the dataProvider to be settled
 	 */
-	refreshing = writable<boolean>(false);
+	fetching = writable<boolean>(false);
 
 	/**
-	 * Refreshes the content of this store by calling the data provider and waiting for the new value.
+	 * Updates the content of this store by calling the data provider and waiting for the new value.
 	 * The store is set to the new value only if the value returned from the data provider promise is different than
 	 * the value previously stored.
 	 * If the dataProvider throws an error and a temporaryValue was set to the store, the previous value is restored.
 	 * @param temporaryValue (optional) a value the store will contain until the data provider promise resolves
 	 */
-	async refresh(temporaryValue?: TRaw): Promise<void> {
-		if (!this.isRefreshing()) {
-			this.refreshing.set(true);
+	async fetch(temporaryValue?: TRaw): Promise<void> {
+		if (!this.isFetching()) {
+			this.fetching.set(true);
 			const oldValueRaw = this.getRaw();
 			try {
 				if (temporaryValue !== undefined) {
@@ -177,7 +177,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 				}
 				throw err;
 			} finally {
-				this.refreshing.set(false);
+				this.fetching.set(false);
 			}
 		}
 	}
@@ -203,8 +203,8 @@ export interface AsyncReadableConfig<T, TRaw> {
 	dataProvider: () => Promise<TRaw>
 	/** A start function to pass to the Readable store */
 	start?: (set: (value: TRaw) => void) => void|(() => void),
-	/** Whether or not the dataProvider should be called automatically by this constructor to refresh the data */
-	refresh?: boolean,
+	/** Whether or not the dataProvider should be called automatically by this constructor to fetch the data */
+	prefetch?: boolean,
 	/** Whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data) */
 	resetOnInitFailure?: boolean,
 }
@@ -217,7 +217,7 @@ export interface AsyncReadableConfig<T, TRaw> {
  * @param config.mapper (optional) a function that converts TRaw to T
  * @param config.storageName (optional) a string containing the key for the localStorage to cache the value contained in the store
  * @param config.start (optional) a start function to pass to the Readable store
- * @param config.refresh (optional) whether or not the dataProvider should be called automatically by this constructor to refresh the data, defaults to true
+ * @param config.prefetch (optional) whether or not the dataProvider should be called automatically by this constructor to fetch the data, defaults to true
  * @param config.resetOnInitFailure (optional) whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data), defaults to true
  */
 export function asyncReadable<T, TRaw = T>(config: AsyncReadableConfig<T, TRaw>) {
