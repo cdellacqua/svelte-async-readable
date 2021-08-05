@@ -2,16 +2,18 @@
 	"name": "svelte-async-readable",
 	"version": "3.0.1",
 	"description": "Svelte Readable Store bound to an async resource",
-	"main": "build/index.js",
 	"types": "build/index.d.ts",
+	"main": "build/index.cjs.js",
+	"module": "build/index.esm.js",
+	"type": "module",
 	"scripts": {
 		"test": "jest",
 		"coverage": "jest --coverage",
-		"build": "rimraf build && tsc",
+		"build": "rimraf build && rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir build",
 		"doc": "rimraf docs && typedoc --disableSources --readme none --mode file --plugin typedoc-plugin-markdown src/index.ts",
 		"prepare": "npm run build && npm run doc",
 		"prepublishOnly": "npm test",
-		"dev": "npm run build && rimraf public/build && rollup -c -w",
+		"dev": "npm run build && rimraf public/build && rollup -c rollup.preview.config.js -w",
 		"start": "sirv public --host"
 	},
 	"keywords": [
@@ -33,6 +35,13 @@
 	"files": [
 		"build/**/*"
 	],
+	"exports": {
+		".": {
+			"import": "./build/index.esm.js",
+			"require": "./build/index.cjs.js"
+		},
+		"./package.json": "./package.json"
+	},
 	"author": "Carlo Dell'Acqua",
 	"license": "MIT",
 	"devDependencies": {
