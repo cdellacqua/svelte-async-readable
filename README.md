@@ -2,6 +2,10 @@
 
 Svelte Readable Store bound to an async resource
 
+[NPM Package](https://www.npmjs.com/package/svelte-async-readable)
+
+`npm install --save-dev svelte-async-readable`
+
 ## Full documentation:
 * [AsyncReadable](https://github.com/cdellacqua/svelte-async-readable/blob/master/docs/classes/asyncreadable.md)
 
@@ -12,9 +16,7 @@ You can clone this repo and run `npm run dev` to see it working
 
 ## Highlights
 
-###
-
-Creates an async readable associated with a GET request:
+Create an async readable associated with a GET request:
 ```
 const myReadable = asyncReadable({
 	dataProvider: () => axios.get('/path/to/api').then((response) => response.data),
