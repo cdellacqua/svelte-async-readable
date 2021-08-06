@@ -4,7 +4,8 @@ import pkg from './package.json';
 const external = [
 	...Object.keys(pkg.devDependencies || {}),
 	...Object.keys(pkg.peerDependencies || {}),
-	...Object.keys(pkg.dependencies || {})
+	...Object.keys(pkg.dependencies || {}),
+	'svelte/store'
 ];
 
 export default [
