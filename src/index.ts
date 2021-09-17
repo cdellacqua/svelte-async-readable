@@ -94,7 +94,7 @@ export class AsyncReadable<T, TRaw = T> implements Readable<T> {
 		this._readable = derived(this.writableRaw, ($value) => this.mapper($value));
 
 		if (prefetch === undefined || prefetch) {
-			this.fetch();
+			this.fetch().catch((err) => console.error(err));
 		}
 	}
 	
