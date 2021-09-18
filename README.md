@@ -53,9 +53,14 @@ The fetch must be manually triggered (for example, after some changes to the app
 ```js
 myReadable.fetch();
 ```
-You can pass a temporary value that will be assigned to the AsyncReadable to notify all subscribers while waiting for the new value that will be retrieved using the dataProvider. This also can be useful to show a loading/intermediate state
+
+If a fetching is already in progress, subsequent fetch calls will be ignored, unless you set the force flag to `true`
 ```js
-myReadable.fetch(null);
+myReadable.fetch(true);
+```
+You can also pass a temporary value that will be assigned to the AsyncReadable to notify all subscribers while waiting for the new value that will be retrieved using the dataProvider. This also can be useful to show a loading/intermediate state
+```js
+myReadable.fetch(true, null); // or myReadable.fetch(false, null);
 ```
 
 ## Persisting data
