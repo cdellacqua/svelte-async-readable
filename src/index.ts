@@ -6,7 +6,7 @@ import {
 /**
  * Svelte Readable Store bound to an async resource
  */
-export interface AsyncReadable<T, TCache extends Writable<T>> extends Readable<T> {
+export interface AsyncReadable<T, TCache extends Writable<T> = Writable<T>> extends Readable<T> {
 	/**
 	 * Returns true if the fetch function is still waiting for the promise of the dataProvider to settle
 	 */
@@ -48,7 +48,7 @@ export interface AsyncReadableConfig<T> {
  * @param config a configuration object
  * @param config.dataProvider a function that returns a Promise<T> that resolves to the new content of this store. It the Promise rejects, the store will keep its previous value
  */
-export function asyncReadable<T, TCache extends Writable<T>>(
+export function asyncReadable<T, TCache extends Writable<T> = Writable<T>>(
 	cache: TCache,
 	{ dataProvider }: AsyncReadableConfig<T>
 ): AsyncReadable<T, TCache> {
