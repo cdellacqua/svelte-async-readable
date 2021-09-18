@@ -1,4 +1,5 @@
-import { AsyncReadable } from "../src/index";
+import { writable } from 'svelte/store';
+import { asyncReadable } from "../src/index";
 
 describe('constructors', function () {
 	it('constructs a readable store', (done) => {
@@ -15,11 +16,12 @@ describe('constructors', function () {
 			}
 		}
 
-		new AsyncReadable<number[]>({
+		const testAsyncReadable = asyncReadable<number[]>(writable([]), {
 			dataProvider: () => new Promise((res) => {
 				setTimeout(() => res([1,2,3]), 100);
 			}),
-			initialValue: [],
-		}).subscribe(callback);
+		});
+		testAsyncReadable.subscribe(callback);
+		testAsyncReadable.fetch().catch(done);
 	});
 });
