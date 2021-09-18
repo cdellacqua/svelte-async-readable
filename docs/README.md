@@ -4,12 +4,9 @@
 
 ## Index
 
-### Classes
-
-* [AsyncReadable](classes/asyncreadable.md)
-
 ### Interfaces
 
+* [AsyncReadable](interfaces/asyncreadable.md)
 * [AsyncReadableConfig](interfaces/asyncreadableconfig.md)
 
 ### Functions
@@ -20,20 +17,26 @@
 
 ###  asyncReadable
 
-▸ **asyncReadable**<**T**, **TRaw**>(`config`: [AsyncReadableConfig](interfaces/asyncreadableconfig.md)‹T, TRaw›): *[AsyncReadable](classes/asyncreadable.md)‹T, TRaw›*
+▸ **asyncReadable**<**T**, **TCache**>(`cache`: TCache, `__namedParameters`: object): *[AsyncReadable](interfaces/asyncreadable.md)‹T, TCache›*
 
-Instantiates an async readable
+Creates an asyncReadable store
 
 **Type parameters:**
 
 ▪ **T**
 
-▪ **TRaw**
+▪ **TCache**: *Writable‹T›*
 
 **Parameters:**
 
+▪ **cache**: *TCache*
+
+a Writable store that will be used for initialization and storage purposes. (e.g. a simple writable, a store that persist its content to the localStorage, ...)
+
+▪ **__namedParameters**: *object*
+
 Name | Type |
 ------ | ------ |
-`config` | [AsyncReadableConfig](interfaces/asyncreadableconfig.md)‹T, TRaw› |
+`dataProvider` | function |
 
-**Returns:** *[AsyncReadable](classes/asyncreadable.md)‹T, TRaw›*
+**Returns:** *[AsyncReadable](interfaces/asyncreadable.md)‹T, TCache›*

@@ -1,12 +1,10 @@
 [svelte-async-readable](../README.md) › [AsyncReadableConfig](asyncreadableconfig.md)
 
-# Interface: AsyncReadableConfig <**T, TRaw**>
+# Interface: AsyncReadableConfig <**T**>
 
 ## Type parameters
 
 ▪ **T**
-
-▪ **TRaw**
 
 ## Hierarchy
 
@@ -17,12 +15,6 @@
 ### Properties
 
 * [dataProvider](asyncreadableconfig.md#dataprovider)
-* [initialValue](asyncreadableconfig.md#initialvalue)
-* [mapper](asyncreadableconfig.md#optional-mapper)
-* [prefetch](asyncreadableconfig.md#optional-prefetch)
-* [resetOnInitFailure](asyncreadableconfig.md#optional-resetoninitfailure)
-* [start](asyncreadableconfig.md#optional-start)
-* [storageName](asyncreadableconfig.md#optional-storagename)
 
 ## Properties
 
@@ -30,56 +22,9 @@
 
 • **dataProvider**: *function*
 
-A function that returns a Promise to obtain TRaw
+A function that returns returns a Promise<T> that resolves to the new content of this store.
+If the Promise rejects, the store will keep its previous value.
 
 #### Type declaration:
 
-▸ (): *Promise‹TRaw›*
-
-___
-
-###  initialValue
-
-• **initialValue**: *TRaw*
-
-The initial value the readable store will contain
-
-___
-
-### `Optional` mapper
-
-• **mapper**? : *undefined | function*
-
-A function that converts TRaw to T
-
-___
-
-### `Optional` prefetch
-
-• **prefetch**? : *undefined | false | true*
-
-Whether or not the dataProvider should be called automatically by this constructor to fetch the data
-
-___
-
-### `Optional` resetOnInitFailure
-
-• **resetOnInitFailure**? : *undefined | false | true*
-
-Whether or not the localStorage item should be set to initialValue if an error occurs during initialization (e.g. due to invalid data)
-
-___
-
-### `Optional` start
-
-• **start**? : *undefined | function*
-
-A start function to pass to the Readable store
-
-___
-
-### `Optional` storageName
-
-• **storageName**? : *undefined | string*
-
-A string containing the key for the localStorage to cache the value contained in the store
+▸ (): *Promise‹T›*

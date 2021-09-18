@@ -8,7 +8,7 @@ Svelte Readable Store bound to an async resource
 `npm install svelte-async-readable`
 
 ## Full documentation:
-* [AsyncReadable](https://github.com/cdellacqua/svelte-async-readable/blob/master/docs/classes/asyncreadable.md)
+* [AsyncReadable](https://github.com/cdellacqua/svelte-async-readable/blob/master/docs/README.md)
 
 ## Working demo:
 * [App.svelte](https://github.com/cdellacqua/svelte-async-readable/blob/master/src/App.svelte)
